@@ -100,7 +100,7 @@ The following shortcut can be used on the automation server to recieve the webho
 
 The shorrcut is simple. It displays a basic notification via pushcut with details of the webhook event. It is functional, but intended for illustration purposes. You shoild customize it to your liking.
 
-https://www.icloud.com/shortcuts/82028e24bcb24b78bf1d6ae57042ebf2
+https://www.icloud.com/shortcuts/4d04fda7fdba42419e9388163d948d79
 
 # Running the App Locally
 
