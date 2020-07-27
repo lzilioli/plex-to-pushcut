@@ -18,7 +18,7 @@ npm install
 cp settings-example.js example.js
 ```
 
-## Copnfiguring Plex
+## Configuring Plex
 
 [Add the webhook](https://app.plex.tv/desktop#!/settings/webhooks) `http://localhost:12000/` to [your plex server](https://app.plex.tv/web/app#!/account/webhooks).
 
