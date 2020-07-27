@@ -52,8 +52,8 @@ function main() {
     }
 
     // Send webhook request to the shortcut for processing
-    if (settings.shotcutName) {
-      console.log(`invoking shortcut: ${shortcutName}`)
+    if (settings.shortcutName) {
+      console.log(`invoking shortcut: ${settings.shortcutName}`)
       axios.post(`https://api.pushcut.io/${pushcutSecret}/execute?shortcut=${settings.shortcutName}`, {
           input: payload
         })
