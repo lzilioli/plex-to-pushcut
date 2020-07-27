@@ -33,7 +33,7 @@ cp settings-example.js settings.js`);
 }
 
 function main() {
-  // TODO can I somehow get the thumbnail and pass it to pushcut as a base64 encoded image?
+  // TODO #1 can I somehow get the thumbnail and pass it to pushcut as a base64 encoded image?
   app.post('/', upload.single('thumb'), function (req, res, next) {
     console.log('file?', req.file);
     var payload = JSON.parse(req.body.payload);
@@ -113,7 +113,7 @@ function main() {
     };
     debug('hitting pushcut with data', JSON.stringify(form, null, 2));
 
-    // TODO add throttling/rate-limiting based on {playerName,mediaType,mediaEventType}
+    // TODO #2 add throttling/rate-limiting based on {playerName,mediaType,mediaEventType}
     axios.post(`https://api.pushcut.io/${pushcutSecret}/notifications/${theActionSet.notificationName}`, form)
     .then((response)=>{
       let body = response.body;
