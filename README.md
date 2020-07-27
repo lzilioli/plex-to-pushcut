@@ -37,6 +37,8 @@ This app bridges to two different Pushcut endpoints.
 
 Depending on your settings, any given incoming Plex webhook could get sent to either, neither, or both of those endpoints.
 
+The settings format is documented below. Refer to settings-example.js in this repo for a real-world example.
+
 ```
 interface Settings {
   // Specifies the name of the Shortcut on the automation
