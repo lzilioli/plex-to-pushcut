@@ -1,8 +1,8 @@
 # plex-to-pushcut
 
-Node app for mapping plex webhook payloads to PushCut.
+Node app for mapping plex webhook payloads to [Pushcut](https://www.pushcut.io/index.html).
 
-Supports both PushCut notifications API as well as the ability to pass the payload on to a shortcut running on your PushCut automation server.
+Supports both Pushcut notifications API as well as the ability to pass the payload on to a shortcut running on your Pushcut automation server.
 
 # One Time Setup
 
