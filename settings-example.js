@@ -11,6 +11,8 @@ module.exports = {
       mediaTypes: ['episode', 'movie'],
       players: ['TV - Living Room'],
       notificationName: 'MyPushcutNotification',
+      throttleKey: 'living-room-play-start',
+      throttleTimeout: 1000 * 60 * 15, /* 15 minutes */
       notificationPayload: {
         // anything as documented in https://www.pushcut.io/support.html#web_api
         defaultAction: {
@@ -35,6 +37,8 @@ module.exports = {
       mediaTypes: ['episode', 'movie'],
       players: ['TV - Living Room'],
       notificationName: 'MyPushcutNotification',
+      throttleKey: 'living-room-play-paused',
+      throttleTimeout: 1000 * 60 * 15, /* 15 minutes */
       notificationPayload: {
         defaultAction: {
           name: 'Bighten the Lights',
@@ -52,6 +56,8 @@ module.exports = {
       mediaTypes: ['episode', 'movie'],
       players: ['TV - Bedroom'],
       notificationName: 'MyPushcutNotification',
+      throttleKey: 'bedroom-play-start',
+      throttleTimeout: 1000 * 60 * 15, /* 15 minutes */
       notificationPayload: {
         defaultAction: {
           homekit: 'In Bed',

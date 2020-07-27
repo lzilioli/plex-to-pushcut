@@ -43,7 +43,8 @@ The settings format is documented below. Refer to settings-example.js in this re
 interface Settings {
   // Specifies the name of the Shortcut on the automation
   // server that should recieve the plex payload. If this
-  // is not specified, the Pushcut `/execute` endpoint will // always be skipped.
+  // is not specified, the Pushcut `/execute` endpoint will
+  // always be skipped.
   shortcutName: string;
   // If true, any incoming payload for which owner is false
   // will never be forwarded to Pushcut.
@@ -74,6 +75,15 @@ interface NotificationActionSet {
   // by running this app and observing its console output
   // when you play or pause the player with this app running
   players: string[];
+  // Key to be associated with the throttle event for this notification
+  // if specified, this notification will only be sent once every
+  // throttleTimeout, no matter how many times the webhook fires.
+  throttleKey: string,
+  // Amount of time, in milliseconds, to wait until sending this same
+  // NotificationAction along to Pushcut
+  throttleTimeout: 1000 * 60 * 15, /* 15 minutes */
+  // Payload to send to pushcut when this Action Set is matched by
+  // an incoming payload
   notificationPayload: PushcutNotificationPayload;
 }
 
