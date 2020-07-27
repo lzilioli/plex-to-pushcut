@@ -96,7 +96,9 @@ interface PushcutNotificationPayload {
 
 # Sample Handler Shortcut
 
-The following shortcut can be used on the automation server to recieve the webhook paylod. Its simple. It displays a basic notification via pushcut with details of the webhook event. It is functional, but intended for illustration purposes. You shoild customize it to your liking.
+The following shortcut can be used on the automation server to recieve the webhook paylod. After installing it, enable it on the Pushcut automation server, and specify its name for `shortcutName` in settings.js.
+
+The shorrcut is simple. It displays a basic notification via pushcut with details of the webhook event. It is functional, but intended for illustration purposes. You shoild customize it to your liking.
 
 https://www.icloud.com/shortcuts/82028e24bcb24b78bf1d6ae57042ebf2
 
