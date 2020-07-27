@@ -20,7 +20,7 @@ cp settings-example.js example.js
 
 ## Configuring Plex
 
-[Add the webhook](https://app.plex.tv/desktop#!/settings/webhooks) `http://localhost:12000/` to [your plex server](https://app.plex.tv/web/app#!/account/webhooks).
+Add the webhook `http://localhost:12000/` to [your plex server](https://app.plex.tv/desktop#!/settings/webhooks).
 
 **Note:** you can override port `12000` using the `PLEX_WEBHOOK_PORT` environment variable.
 
