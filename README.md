@@ -86,7 +86,7 @@ interface PushcutNotificationPayload {
 # Running the App Locally
 
 ```bash
-DEBUG=plex*\
+DEBUG=plex-to-pushcut*\
 PLEX_WEBHOOK_PORT=12000\
 PUSHCUT_SECRET=<your pushcut secret>\
 node index.js
