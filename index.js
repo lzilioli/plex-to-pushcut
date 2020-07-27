@@ -35,7 +35,7 @@ cp settings-example.js settings.js`);
 function main() {
   // TODO can I somehow get the thumbnail and pass it to pushcut as a base64 encoded image?
   app.post('/', upload.single('thumb'), function (req, res, next) {
-    console.log(req.file);
+    console.log('file?', req.file);
     var payload = JSON.parse(req.body.payload);
     // debug('webhook hit with payload', payload);
 
