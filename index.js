@@ -47,13 +47,6 @@ function main() {
     var payload = JSON.parse(req.body.payload);
     verbose('webhook hit with payload', payload);
 
-    const playerName = payload.Player.title;
-    console.log('player', playerName);
-    const mediaType = payload.Metadata.type;
-    console.log('media type', mediaType);
-    const mediaEventType = payload.event;
-    console.log('event', mediaEventType);
-
     if (settings.skipPayloadIfNotOwner && !payload.owner) {
       debug('ignoring request because skipPayloadIfNotOwner && owner === false');
       return;
@@ -74,6 +67,13 @@ function main() {
           verbose(error)
         });
     }
+
+    const playerName = (payload.Player || {}).title || 'n/a';
+    console.log('player', playerName);
+    const mediaType = payload.Metadata.type;
+    console.log('media type', mediaType);
+    const mediaEventType = payload.event;
+    console.log('event', mediaEventType);
 
     const matchingnotificationActionSets = _.chain(settings.notificationActionSets)
     // Look for action sets matching the payload player
