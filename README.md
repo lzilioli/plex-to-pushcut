@@ -32,8 +32,8 @@ It might help to refer to [Plex' webhook documentation](https://support.plex.tv/
 
 This app bridges to two different Pushcut endpoints.
 
-1. `https://api.pushcut.io/${pushcutSecret}/execute?shortcut=${settings.shortcutName}`
-2. `https://api.pushcut.io/${pushcutSecret}/notifications/${theActionSet.notificationName}`
+1. `https://api.pushcut.io/<secret>/execute?shortcut=shortcut-name`
+2. `https://api.pushcut.io/<secret>/notifications/notification-name`
 
 Depending on your settings, any given incoming Plex webhook could get sent to either, neither, or both of those endpoints.
 
