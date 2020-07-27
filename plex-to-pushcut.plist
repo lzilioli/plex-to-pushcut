@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>plex-to-pushcut</string>
+    <key>ProgramArguments</key>
+    <array>
+      <!-- Modify these two lines to reflect your node location and repo location -->
+      <string>/Users/admin/.nvm/versions/node/v12.8.3/bin/node</string>
+      <string>/Users/admin/Projects/plex-to-pushcut</string>
+      <string>run</string>
+    </array>
+    <key>StandardErrorPath</key>
+    <string>/Users/admin/Library/Logs/plex-to-pushcut/err.log</string>
+    <key>StandardOutPath</key>
+    <string>/Users/admin/Library/Logs/plex-to-pushcut/out.log</string>
+    <key>EnvironmentVariables</key>
+    <dictionary>
+      <key>DEBUG</key>
+      <string>plex-to-pushcut:*</string>
+      <key>PUSHCUT_SECRET</key>
+      <!-- modify this line to include your Pushcut secret -->
+      <string>YOUR_PUSHCUT_SECRET</string>
+      <key>PLEX_WEBHOOK_PORT</key>
+      <string>12000</string>
+
+    </dictionary>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+  </dict>
+</plist>
+
