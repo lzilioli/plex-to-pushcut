@@ -59,12 +59,12 @@ function main() {
           input: payload
         })
         .then((response) => {
-          debug('the Pushcut shortcut responded', response.data);
+          console.log('the Pushcut shortcut responded', response.data);
           verbose(response);
         })
         .catch((error) => {
           debug('the Pushcut execute endpoint returned an error');
-          verbose(error)
+          verbose(error);
         });
     }
 
@@ -133,14 +133,18 @@ function main() {
       ...theActionSet.notificationPayload
     };
     debug('sending pushcut notification (if not throttled)');
-    const sendTheRequest = (withForm) => {
+    const sendTheRequest = () => {
       console.log(`sending notification (throttle timeout passed): ${settings.shortcutName}`, JSON.stringify(form, null, 2))
-      axios.post(`https://api.pushcut.io/${pushcutSecret}/notifications/${theActionSet.notificationName}`, withForm)
+      axios.post(`https://api.pushcut.io/${pushcutSecret}/notifications/${theActionSet.notificationName}`, form)
       .then((response)=>{
-        let body = response.body;
+        let body = response.body || {};
         if (body && body.error) {
           console.log(`ERROR from webhook:\n  ${body.error}`);
         }
+        console.log('the Pushcut notification endpoint responded', body.message);
+      })
+      .catch((error) => {
+        console.log('error sending notification', error.response.data);
       });
     };
     throttledRequestMethods[throttleKey](sendTheRequest);
@@ -151,7 +155,12 @@ function main() {
   console.log(`point plex webhooks to http://localhost:${PLEX_WEBHOOK_PORT} at https://app.plex.tv/desktop#!/settings/webhooks`);
   let server = app.listen(PLEX_WEBHOOK_PORT);
 
+  let isClosing = false;
   function closeServer() {
+    if (isClosing) {
+      return;
+    }
+    isClosing = true;
     server.close(() => {
       console.log('Http server closed.');
       process.exit(0);
