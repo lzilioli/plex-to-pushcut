@@ -99,12 +99,14 @@ function main() {
       console.log(`${matchingnotificationActionSets.length} action sets found for ${playerName}, ${mediaType}, ${mediaEventType} combo. Using the first one. You probably want to modify your config.`);
     }
 
-    let title = `${payload.Player.title}`;
-    if (payload.event == 'media.play' || payload.event == 'media.resume') {
+    const theActionSet = matchingnotificationActionSets[0];
+
+    let title = theActionSet.title || `${payload.Player.title}`;
+    if (mediaEventType == 'media.play' || mediaEventType == 'media.resume') {
       title = `🟢 ${title}`;
-    } else if (payload.event == 'media.pause') {
+    } else if (mediaEventType == 'media.pause') {
       title = `🟡 ${title}`;
-    } else if (payload.event == 'media.stop') {
+    } else if (mediaEventType == 'media.stop') {
       title = `🛑 ${title}`;
     }
 
@@ -117,7 +119,6 @@ function main() {
       text = `🎧 ${payload.Metadata.title}`;
     }
 
-    const theActionSet = matchingnotificationActionSets[0];
     let throttleKey = theActionSet.throttleKey || 'no-throttle';
     let throttleTimeout = theActionSet.throttleTimeout || 0;
     if (throttleKey === 'no-throttle') {
@@ -128,9 +129,9 @@ function main() {
     }
 
     const form = {
-      title,
       text,
-      ...theActionSet.notificationPayload
+      ...theActionSet.notificationPayload,
+      title,
     };
     debug('sending pushcut notification (if not throttled)');
     const sendTheRequest = () => {
