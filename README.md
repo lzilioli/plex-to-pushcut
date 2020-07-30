@@ -46,6 +46,9 @@ interface Settings {
   // is not specified, the Pushcut `/execute` endpoint will
   // always be skipped.
   shortcutName: string;
+  // (optional) events to pass to the executed shortcut named by
+  // shortcutName
+  shortcutEventFilter: string[];
   // If true, any incoming payload for which owner is false
   // will never be forwarded to Pushcut.
   skipPayloadIfNotOwner: boolean;

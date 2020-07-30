@@ -3,6 +3,7 @@ module.exports = {
   // optional, is shortcutName is specified, the full payload
   // will be passed to your automation server
   shortcutName: 'Plex Webhook Receiver',
+  shortcutEventFilter: ['playback.started', 'library.new'],
   skipPayloadIfNotOwner: true,
   notificationActionSets: [
     // living room AND (play OR resume) AND (TV Show OR movie)

@@ -53,7 +53,8 @@ function main() {
     }
 
     // Send webhook request to the shortcut for processing
-    if (settings.shortcutName) {
+    const eventFilter = settings.shortcutEventFilter || [];
+    if (settings.shortcutName && (!eventFilter.length || eventFilter.indexOf(payload.event) !== -1)) {
       console.log(`invoking shortcut: ${settings.shortcutName}`)
       axios.post(`https://api.pushcut.io/${pushcutSecret}/execute?shortcut=${encodeURIComponent(settings.shortcutName)}`, {
           input: payload
@@ -66,6 +67,9 @@ function main() {
           debug('the Pushcut execute endpoint returned an error');
           verbose(error);
         });
+    } else {
+      console.log(`skipping Pushcut execute of Shortcut "${settings.shortcutName}."`);
+      console.log(`payload.event: ${payload.event}, shortcutEventFilter: ${settings.shortcutEventFilter}`)
     }
 
     const playerName = (payload.Player || {}).title || 'n/a';
