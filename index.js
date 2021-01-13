@@ -44,11 +44,19 @@ function main() {
   // TODO #1 can I somehow get the thumbnail and pass it to pushcut as a base64 encoded image?
   app.post('/', upload.single('thumb'), function (req, res, next) {
     console.log('file?', req.file);
+    let image = undefined;
+    if (req.file) {
+      const fs = require('fs');
+      image = fs.readFileSync(req.file.path, {encoding: 'base64'}).toString();
+      console.log(image)
+      image = `data:image/png;base64,${image}`;
+    }
     var payload = JSON.parse(req.body.payload);
     verbose('webhook hit with payload', payload);
 
     if (settings.skipPayloadIfNotOwner && !payload.owner) {
       debug('ignoring request because skipPayloadIfNotOwner && owner === false');
+      res.sendStatus(200);
       return;
     }
 
@@ -96,6 +104,7 @@ function main() {
 
     if (matchingnotificationActionSets.length === 0) {
       debug(`no action sets found for ${playerName}, ${mediaType}, ${mediaEventType} combo, skipping`);
+      res.sendStatus(200);
       return;
     }
 
@@ -105,22 +114,22 @@ function main() {
 
     const theActionSet = matchingnotificationActionSets[0];
 
-    let title = theActionSet.title || `${payload.Player.title}`;
-    if (mediaEventType == 'media.play' || mediaEventType == 'media.resume') {
-      title = `🟢 ${title}`;
-    } else if (mediaEventType == 'media.pause') {
-      title = `🟡 ${title}`;
-    } else if (mediaEventType == 'media.stop') {
-      title = `🛑 ${title}`;
+    let title = `📺 You're watching Plex`;
+    if (payload.Metadata.type === 'episode') {
+      title = `📺 ${payload.Metadata.grandparentTitle} - ${payload.Metadata.title}`;
+    } else if (payload.Metadata.type === 'movie') {
+      title = `🎥 ${payload.Metadata.title}`;
+    } else if (payload.Metadata.type === 'track') {
+      title = `🎧 ${payload.Metadata.title}`;
     }
 
-    let text = `📺 You're watching Plex`;
-    if (payload.Metadata.type === 'episode') {
-      text = `📺 ${payload.Metadata.grandparentTitle} - ${payload.Metadata.title}`;
-    } else if (payload.Metadata.type === 'movie') {
-      text = `🎥 ${payload.Metadata.title}`;
-    } else if (payload.Metadata.type === 'track') {
-      text = `🎧 ${payload.Metadata.title}`;
+    let text = theActionSet.title || `${payload.Player.title}`;
+    if (mediaEventType == 'media.play' || mediaEventType == 'media.resume') {
+      text = `🟢 ${text}`;
+    } else if (mediaEventType == 'media.pause') {
+      text = `🟡 ${text}`;
+    } else if (mediaEventType == 'media.stop') {
+      text = `🛑 ${text}`;
     }
 
     let throttleKey = theActionSet.throttleKey || 'no-throttle';
@@ -134,6 +143,7 @@ function main() {
 
     const form = {
       text,
+      image,
       ...theActionSet.notificationPayload,
       title,
     };
