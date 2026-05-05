@@ -12,6 +12,21 @@ var verbose = require('debug')('verbose');
 var app = express();
 var upload = multer({ dest: '/tmp/' });
 
+function formatDuration(ms) {
+  if (!ms) return null;
+  var totalMin = Math.round(ms / 60000);
+  if (totalMin < 60) return totalMin + ' min';
+  var hours = Math.floor(totalMin / 60);
+  var min = totalMin % 60;
+  return min > 0 ? hours + 'h ' + min + 'min' : hours + 'h';
+}
+
+function truncateSummary(text, maxLen) {
+  if (!text) return null;
+  if (text.length <= maxLen) return text;
+  return text.substring(0, maxLen - 1) + '…';
+}
+
 if(!process.env.PUSHCUT_SECRET) {
   throw new Error(`missing env variable PUSHCUT_SECRET`);
 }
@@ -114,22 +129,52 @@ function main() {
 
     const theActionSet = matchingnotificationActionSets[0];
 
-    let title = `📺 You're watching Plex`;
-    if (payload.Metadata.type === 'episode') {
-      title = `📺 ${payload.Metadata.grandparentTitle} - ${payload.Metadata.title}`;
-    } else if (payload.Metadata.type === 'movie') {
-      title = `🎥 ${payload.Metadata.title}`;
-    } else if (payload.Metadata.type === 'track') {
-      title = `🎧 ${payload.Metadata.title}`;
+    // Build state emoji
+    let stateEmoji = '';
+    if (mediaEventType == 'media.play' || mediaEventType == 'media.resume') {
+      stateEmoji = '🟢';
+    } else if (mediaEventType == 'media.pause') {
+      stateEmoji = '🟡';
+    } else if (mediaEventType == 'media.stop') {
+      stateEmoji = '🛑';
     }
 
-    let text = theActionSet.title || `${payload.Player.title}`;
-    if (mediaEventType == 'media.play' || mediaEventType == 'media.resume') {
-      text = `🟢 ${text}`;
-    } else if (mediaEventType == 'media.pause') {
-      text = `🟡 ${text}`;
-    } else if (mediaEventType == 'media.stop') {
-      text = `🛑 ${text}`;
+    let roomName = theActionSet.title || payload.Player.title;
+    let meta = payload.Metadata;
+    let title, text;
+
+    if (meta.type === 'episode') {
+      // Title: 🟢 Living Room — Breaking Bad
+      title = `${stateEmoji} ${roomName} — ${meta.grandparentTitle}`;
+      // Text body: episode details
+      let epCode = (meta.parentIndex != null && meta.index != null)
+        ? `S${String(meta.parentIndex).padStart(2, '0')}E${String(meta.index).padStart(2, '0')} · `
+        : '';
+      let details = [meta.contentRating, formatDuration(meta.duration)].filter(Boolean).join(' · ');
+      let lines = [`${epCode}${meta.title}`];
+      if (details) lines.push(details);
+      let summary = truncateSummary(meta.summary, 120);
+      if (summary) lines.push(`"${summary}"`);
+      text = lines.join('\n');
+    } else if (meta.type === 'movie') {
+      // Title: 🟢 Living Room — The Dark Knight
+      title = `${stateEmoji} ${roomName} — ${meta.title}`;
+      // Text body: movie details
+      let details = [meta.year, meta.contentRating, formatDuration(meta.duration)].filter(Boolean).join(' · ');
+      let lines = [];
+      if (details) lines.push(details);
+      if (meta.rating) lines.push(`★ ${meta.rating}`);
+      let summary = truncateSummary(meta.summary, 120);
+      if (summary) lines.push(`"${summary}"`);
+      text = lines.join('\n');
+    } else if (meta.type === 'track') {
+      title = `${stateEmoji} ${roomName} — ${meta.grandparentTitle || 'Music'}`;
+      let lines = [meta.title];
+      if (meta.parentTitle) lines.push(meta.parentTitle);
+      text = lines.join('\n');
+    } else {
+      title = `${stateEmoji} ${roomName}`;
+      text = meta.title || 'Playing on Plex';
     }
 
     let throttleKey = theActionSet.throttleKey || 'no-throttle';
@@ -141,11 +186,19 @@ function main() {
       throttledRequestMethods[throttleKey] = _.throttle(invokeAMethod, throttleTimeout);
     }
 
+    // Build Plex web app deep link
+    let plexUrl = null;
+    if (payload.Server && payload.Server.uuid && meta.key) {
+      plexUrl = `https://app.plex.tv/desktop#!/server/${payload.Server.uuid}/details?key=${encodeURIComponent(meta.key)}`;
+    }
+
     const form = {
       text,
       image,
       ...theActionSet.notificationPayload,
       title,
+      threadId: playerName,
+      ...(plexUrl ? { url: plexUrl } : {}),
     };
     debug('sending pushcut notification (if not throttled)');
     const sendTheRequest = () => {
