@@ -2,3 +2,6 @@ node_modules/
 .idea/
 .DS_Store
 settings.js
+.claude/*local*
+.claude/*.lock
+.claude/worktrees
